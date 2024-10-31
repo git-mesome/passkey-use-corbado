@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <title>Local</title>
+    <script>
+        // 클릭 이벤트를 처리하여 이메일과 함께 요청을 보내는 함수
+        function redirectToCompanyDomain(domain) {
+            // 이메일을 쿼리 파라미터로 추가하여 URL을 구성
+            // 새로운 URL로 리디렉션
+            window.location.href = `https://${domain}`;
+        }
+    </script>
+</head>
+<body>
+<h2>접속 가능한 회사 도메인 목록</h2>
+<ul>
+    <li th:each="domain : ${companyDomains}">
+        <a th:href="'https://' + ${domain} " th:text="${domain}"></a>
+    </li>
+</ul>
+<p th:if="${#lists.isEmpty(companyDomains)}">No company domains found.</p>
+</body>
+</html>

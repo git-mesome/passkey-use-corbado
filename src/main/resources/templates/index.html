@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/@corbado/web-js@2.8.0/dist/bundle/index.css"
+    />
+    <script src="https://unpkg.com/@corbado/web-js@2.8.0/dist/bundle/index.js" defer></script>
+</head>
+
+<body>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', async () => {
+        await Corbado.load({
+            projectId: /*[[${PROJECT_ID}]]*/,
+            darkMode: "off",
+            setShortSessionCookie: "true",
+        });
+
+        const authElement = document.getElementById('corbado-auth');
+        const aaa = Corbado.mountAuthUI(authElement, {
+            onLoggedIn: async () => {
+                // 쿠키에서 cbo_short_session 값을 안전하게 추출
+                const cookieMatch = document.cookie.match(/cbo_short_session=([^;]*)/);
+
+                // 쿠키가 존재하는지 확인
+                if (cookieMatch && cookieMatch[1]) {
+                    const session = cookieMatch[1];
+
+                    // 서버 1에 사용자 정보를 POST로 전송
+                    const response = await fetch('https://localhost:8080/imsi', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            session: session // 추출한 세션 값 사용
+                        })
+                    });
+
+                    if (response.ok) {
+                        console.log('Profile successfully sent to Server 1');
+                    } else {
+                        console.error('Profile submission failed');
+                    }
+                    console.log(response);
+
+                    window.location.replace("https://localhost:8080/imsi");
+                } else {
+                    console.error('cbo_short_session cookie not found');
+                }
+            },
+        });
+    });
+
+
+</script>
+
+<div id="corbado-auth"></div>
+</body>
+</html>
