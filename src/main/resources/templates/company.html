@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/@corbado/web-js@2.8.0/dist/bundle/index.css"
+    />
+    <script src="https://unpkg.com/@corbado/web-js@2.8.0/dist/bundle/index.js" defer></script>
+    <style>
+        .logout-button {
+            margin: 1.25rem 0;
+            max-width: 225px;
+            height: 2.5rem;
+            display: flex;
+            gap: .35rem;
+            align-items: center;
+            justify-content: center;
+            font-size: calc(var(--cb-base-font-size) * 1);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<title>Local</title>
+<!-- Define passkey-list div and logout button -->
+<h2>Company Homepage</h2>
+<p>Name: [[${USER_NAME}]]</p>
+<p>Email: [[${USER_EMAIL}]]</p>
+<div id="passkey-list"></div>
+<button id="logoutButton" class="logout-button">Logout</button>
+
+
+<!-- Script to load Corbado and mount PasskeyList UI -->
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', async () => {
+        await Corbado.load({
+            projectId: /*[[${PROJECT_ID}]]*/,
+            darkMode: "off",
+            setShortSessionCookie: "true" // set short session cookie automatically
+        });
+
+        // Get logout button
+        const logoutButton = document.getElementById('logoutButton');
+        // Add event listener to logout button
+        logoutButton.addEventListener('click', function () {
+            Corbado.logout()
+                .then(() => {
+                    window.location.replace("/");
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        });
+    })();
+</script>
+
+
+</body>
+</html>
+
